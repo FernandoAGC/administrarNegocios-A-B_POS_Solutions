@@ -35,6 +35,7 @@ namespace administrarNegocios_A_B_POS_Solutions.Models
                entity.HasKey(k => k.Id);
                entity.HasIndex(i => i.Nombre).IsUnique();
                entity.Property(p => p.Descripcion).IsRequired(false);
+               entity.HasOne(o => o.Usuario);
             });
 
             modelBuilder.Entity<CategoriaItem>(entity => {

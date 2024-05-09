@@ -6,6 +6,7 @@ namespace administrarNegocios_A_B_POS_Solutions;
 public class Usuario
 {
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     [Required]
     [MaxLength(50)]

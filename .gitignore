@@ -1,0 +1,32 @@
+# .NET
+bin/
+obj/
+.vs/
+*.log
+temp/
+
+# Configuration files
+Global.asax
+launchSettings.json
+
+# Visual Studio Code specific files
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+.idea/
+
+# Visual Studio user-specific files
+*.user
+*.suo
+*.csproj.user
+*.sln
+*.vbproj / *.csproj
+
+# Packages directory
+packages/
+
+# Migrations
+Migrations/

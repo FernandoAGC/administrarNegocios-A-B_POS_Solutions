@@ -1,0 +1,69 @@
+@{
+    ViewData["Title"] = "Login";
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Función para cambiar el tipo de usuario y actualizar la vista
+            function toggleUserType() {
+                var userType = document.getElementById("toggleUserType");
+                var header = document.getElementById("userTypeHeader");
+                var button = document.getElementById("loginButton");
+                var hidden = document.getElementById("inputTipoUsuario");
+                
+                // Cambiar el texto del botón y del encabezado
+                if (userType.textContent === "Cambiar a Cliente") {
+                    hidden.value = "Cliente";
+                    userType.textContent = "Cambiar a Administrador";
+                    header.textContent = "Cliente";
+                    button.textContent = "Iniciar Sesión como Cliente";
+                } else {
+                    hidden.value = "Administrador";
+                    userType.textContent = "Cambiar a Cliente";
+                    header.textContent = "Administrador";
+                    button.textContent = "Iniciar Sesión como Administrador";
+                }
+            }
+
+            // Agregar evento clic al botón
+            var toggleButton = document.getElementById("toggleUserType");
+            toggleButton.addEventListener("click", toggleUserType);
+        });
+    </script>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Iniciar Sesión</h1>
+</div>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <h2 id="userTypeHeader" class="text-center">Administrador</h2>
+            <button id="toggleUserType" class="btn btn-sm btn-primary">Cambiar a Cliente</button>
+            <form asp-action="Login" asp-controller="Login" method="post" class="form-signin">
+                <div class="form-group text-start">
+                    <label for="inputCorreo">Correo</label>
+                    <input type="email" id="inputCorreo" name="Correo" class="form-control" placeholder="Correo" required autofocus>
+                </div>
+                <br>
+                <div class="form-group text-start">
+                    <label for="inputPassword">Contraseña</label>
+                    <input type="password" id="inputContraseña" name="Contraseña" class="form-control" placeholder="Contraseña" required>
+                </div>
+                <br>
+                <input type="hidden" id="inputTipoUsuario" name="TipoUsuario" value="Administrador">
+                <button id="loginButton" class="btn btn-lg btn-primary btn-block" type="submit">Iniciar Sesión como Administrador</button>
+            </form>
+            <br>
+            <!-- Mostrar errores del ModelState -->
+            @if (ViewData.ModelState.ContainsKey(string.Empty))
+            {
+                <div class="alert alert-danger" role="alert">
+                    @Html.ValidationSummary(true)
+                </div>
+            }
+        </div>
+    </div>
+</div>

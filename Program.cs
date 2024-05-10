@@ -27,8 +27,18 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+// definicion de rutas
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Login}/{action=Login}"
+);
+app.MapControllerRoute(
+    name: "administrador",
+    pattern: "{controller=Administrador}/{action=Home}"
+);
+app.MapControllerRoute(
+    name: "cliente",
+    pattern: "{controller=Cliente}/{action=Home}"
+);
 
 app.Run();

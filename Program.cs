@@ -34,11 +34,11 @@ app.MapControllerRoute(
 );
 app.MapControllerRoute(
     name: "administrador",
-    pattern: "{controller=Administrador}/{action=Home}"
+    pattern: "{controller=Administrador}/{action=Inicio}"
 );
 app.MapControllerRoute(
     name: "cliente",
-    pattern: "{controller=Cliente}/{action=Home}"
+    pattern: "{controller=Cliente}/{action=Inicio}"
 );
 
 app.Run();

@@ -13,7 +13,7 @@ public class AdministradorController : Controller
     }
 
     [HttpGet]
-    public IActionResult Home()
+    public IActionResult Inicio()
     {
         return View();
     }

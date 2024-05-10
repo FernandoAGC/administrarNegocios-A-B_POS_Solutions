@@ -1,0 +1,40 @@
+@{
+    ViewData["Title"] = "Usuarios - Administrador";
+}
+
+<div class="row flex-nowrap">
+    <!-- Sidebar -->
+    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
+        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+            <div class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                <span class="fs-5 d-sm-inline">Administrador</span>
+            </div>
+            <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+                <li>
+                    <a href="@Url.Action("Inicio", "Administrador")" class="nav-link px-0 align-middle">
+                        <span class="ms-1 d-sm-inline">Inicio</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Usuarios", "Administrador")" class="nav-link px-0 align-middle">
+                        <span class="ms-1 d-sm-inline">Administrar Usuarios</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Negocios", "Administrador")" class="nav-link px-0 align-middle">
+                        <span class="ms-1 d-sm-inline">Administrar Negocios</span>
+                    </a>
+                </li>
+                <li>
+                    <form class="my-3" asp-action="Logout" asp-controller="Administrador" method="get">
+                        <button type="submit" class="btn btn-danger btn-block">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- Contenido principal -->
+    <div class="col py-3">
+        <h2 class="mt-2">Usuarios</h2>
+    </div>
+</div>

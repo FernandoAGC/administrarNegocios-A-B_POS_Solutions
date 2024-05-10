@@ -5,38 +5,73 @@
 <!-- Se espera la lista de negocios -->
 @model IEnumerable<Negocio>
 
-<h2>Últimos 20 Negocios</h2>
-<br>
-<form asp-action="Inicio" asp-controller="Administrador" method="get">
-    <div class="input-group mb-3">
-        <input type="text" class="form-control" name="filtro" placeholder="Filtrar por nombre de negocio...">
-        <div class="input-group-append">
-            <button type="submit" class="btn btn-primary">Filtrar</button>
+<div class="row flex-nowrap">
+    <!-- Sidebar -->
+    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
+        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+            <div class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                <span class="fs-5 d-sm-inline">Administrador</span>
+            </div>
+            <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+                <li>
+                    <a href="@Url.Action("Inicio", "Administrador")" class="nav-link px-0 align-middle">
+                        <span class="ms-1 d-sm-inline">Inicio</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Usuarios", "Administrador")" class="nav-link px-0 align-middle">
+                        <span class="ms-1 d-sm-inline">Administrar Usuarios</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Negocios", "Administrador")" class="nav-link px-0 align-middle">
+                        <span class="ms-1 d-sm-inline">Administrar Negocios</span>
+                    </a>
+                </li>
+                <li>
+                    <form class="my-3" asp-action="Logout" asp-controller="Administrador" method="get">
+                        <button type="submit" class="btn btn-danger btn-block">Logout</button>
+                    </form>
+                </li>
+            </ul>
         </div>
     </div>
-</form>
-<br>
-<div class="card">
-    <div class="card-header">
-        <h5 class="card-title">Listado de Negocios</h5>
-    </div>
-    <ul class="list-group list-group-flush">
-        @foreach (var negocio in Model)
-        {
-            <li class="list-group-item">
-                <div class="row">
-                    <div class="col-md-4 col-sm-12 mb-1">
-                        <h6 class="mb-0">Nombre: @negocio.Nombre</h6>
-                        <p class="mb-0">Dueño: @negocio.Usuario.Nombres @negocio.Usuario.Apellidos</p>
-                    </div>
-                    <div class="col-lg-6 col-md-8 col-sm-12 mb-1">
-                        <p class="mb-0">Descripción: @negocio.Descripcion</p>
-                    </div>
-                    <div class="col text-muted">
-                        <span>Fecha de creación: @negocio.FechaCreacion.ToShortDateString()</span>
-                    </div>
+    <!-- Contenido principal -->
+    <div class="col py-3">
+        <h2 class="mt-2">Últimos 20 Negocios</h2>
+        <br>
+        <form asp-action="Inicio" asp-controller="Administrador" method="get">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" name="filtro" placeholder="Filtrar por nombre de negocio...">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
                 </div>
-            </li>
-        }
-    </ul>
+            </div>
+        </form>
+        <br>
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Listado de Negocios</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                @foreach (var negocio in Model)
+                {
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-4 col-sm-12 mb-1">
+                                <h6 class="mb-0">Nombre: @negocio.Nombre</h6>
+                                <p class="mb-0">Dueño: @negocio.Usuario.Nombres @negocio.Usuario.Apellidos</p>
+                            </div>
+                            <div class="col-lg-6 col-md-8 col-sm-12 mb-1">
+                                <p class="mb-0">Descripción: @negocio.Descripcion</p>
+                            </div>
+                            <div class="col text-muted">
+                                <span>Fecha de creación: @negocio.FechaCreacion.ToShortDateString()</span>
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
 </div>

@@ -33,11 +33,19 @@ app.MapControllerRoute(
     pattern: "{controller=Login}/{action=Login}"
 );
 app.MapControllerRoute(
-    name: "administrador",
+    name: "Administrador",
     pattern: "{controller=Administrador}/{action=Inicio}"
 );
 app.MapControllerRoute(
-    name: "cliente",
+    name: "Administrador",
+    pattern: "{controller=Administrador}/{action=Usuarios}"
+);
+app.MapControllerRoute(
+    name: "Administrador",
+    pattern: "{controller=Administrador}/{action=Negocios}"
+);
+app.MapControllerRoute(
+    name: "Cliente",
     pattern: "{controller=Cliente}/{action=Inicio}"
 );
 

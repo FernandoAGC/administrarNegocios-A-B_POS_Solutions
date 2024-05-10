@@ -29,4 +29,19 @@ public class AdministradorController : Controller
         // demanera asíncrona convertir los resultados en una lista
         return View(await negocios.ToListAsync());
     }
+
+    public IActionResult Usuarios()
+    {
+        return View();
+    }
+
+    public IActionResult Negocios()
+    {
+        return View();
+    }
+
+    public IActionResult Logout()
+    {
+        return RedirectToAction("Login", "Login");
+    }
 }

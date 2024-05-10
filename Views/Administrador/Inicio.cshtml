@@ -1,3 +1,42 @@
 @{
-    ViewData["Title"] = "Home - Administrador";
+    ViewData["Title"] = "Inicio - Administrador";
 }
+
+<!-- Se espera la lista de negocios -->
+@model IEnumerable<Negocio>
+
+<h2>Últimos 20 Negocios</h2>
+<br>
+<form asp-action="Inicio" asp-controller="Administrador" method="get">
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" name="filtro" placeholder="Filtrar por nombre de negocio...">
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </div>
+    </div>
+</form>
+<br>
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title">Listado de Negocios</h5>
+    </div>
+    <ul class="list-group list-group-flush">
+        @foreach (var negocio in Model)
+        {
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-md-4 col-sm-12 mb-1">
+                        <h6 class="mb-0">Nombre: @negocio.Nombre</h6>
+                        <p class="mb-0">Dueño: @negocio.Usuario.Nombres @negocio.Usuario.Apellidos</p>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12 mb-1">
+                        <p class="mb-0">Descripción: @negocio.Descripcion</p>
+                    </div>
+                    <div class="col text-muted">
+                        <span>Fecha de creación: @negocio.FechaCreacion.ToShortDateString()</span>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</div>

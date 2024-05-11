@@ -32,6 +32,8 @@ public class AdministradorController : Controller
         return View(await negocios.ToListAsync());
     }
 
+    // Funcionalidad para administrar Usuarios
+
     // Regresa la vista con la lista de todos los usuarios
     [HttpGet]
     public async Task<IActionResult> Usuarios()
@@ -87,6 +89,60 @@ public class AdministradorController : Controller
                 apellidos = usuario.Apellidos,
                 correo = usuario.Correo,
                 tipoUsuarioId = usuario.TipoUsuarioId
+            });
+        }
+        return NotFound();
+    }
+
+    // Funcionalidad para administrar Negocios
+    [HttpGet]
+    public async Task<IActionResult> Negocios()
+    {
+        return View(await _context.Negocios.Include(n => n.Usuario).ToListAsync());
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AgregarOActualizarNegocio(Negocio negocio)
+    {
+        if (negocio.Id.ToString() == null || negocio.Id.ToString() == "" || negocio.Id.Equals(null))
+        {
+            await _context.Negocios.AddAsync(negocio);
+            
+        } else {
+            _context.Negocios.Update(negocio);
+        }
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Negocios", "Administrador");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EliminarNegocio(int id)
+    {
+        var negocio = await _context.Negocios.FindAsync(id);
+        // Buscar el usuario a eliminar en la base de datos
+        if (negocio != null)
+        {
+            // Eliminar el usuario de la base de datos
+            _context.Negocios.Remove(negocio);
+            await _context.SaveChangesAsync();
+        }
+        return RedirectToAction("Negocios", "Administrador");
+    }
+
+    // obtiene los datos del negocio a editar
+    [HttpGet]
+    public async Task<IActionResult> ObtenerNegocio(int id)
+    {
+        var negocio = await _context.Negocios.FindAsync(id);
+        if (negocio != null)
+        {
+            return Json(new
+            {
+                id = negocio.Id,
+                nombre = negocio.Nombre,
+                descripcion = negocio.Descripcion,
+                fechaCreacion = negocio.FechaCreacion,
+                usuarioId = negocio.UsuarioId
             });
         }
         return NotFound();

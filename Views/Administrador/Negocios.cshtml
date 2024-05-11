@@ -2,6 +2,56 @@
     ViewData["Title"] = "Negocios - Administrador";
 }
 
+@model IEnumerable<Negocio>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Manejar el clic en el botón "Editar" de cada negocio
+            $('.btn-editar').click(function () {
+                var id = $(this).data('id');
+                $.ajax({
+                    // obtener valores del usuario a editar
+                    url: '@Url.Action("ObtenerNegocio", "Administrador")',
+                    type: 'GET',
+                    data: { id: id },
+                    success: function (negocio) {
+                        // asignar valores del negocio a editar
+                        $('#inputNombre').val(negocio.nombre);
+                        $('#inputDescripcion').val(negocio.descripcion);
+                        // convertir a fecha
+                        var fechaCreacion = new Date(negocio.fechaCreacion);
+                        // Asignar la fecha al input de tipo date
+                        $('#inputFechaCreacion').val(fechaCreacion.toISOString().split('T')[0]);
+                        $('#inputUsuarioId').val(negocio.usuarioId);
+                        $('#inputId').val(negocio.id);
+
+                        // cambiar a modo actualizar negocio
+                        $('#btnSubmit').text('Actualizar Negocio');
+                        $('#btnCancelar').show();
+                    },
+                    error: function () {
+                        alert('Error al obtener los datos del negocio.');
+                    }
+                });
+            });
+
+            // Manejar el clic en el botón "Cancelar"
+            $('#btnCancelar').click(function () {
+                // cambiar a modo agregar negocio
+                $('#btnSubmit').text('Agregar Negocio');
+                $('#btnCancelar').hide();
+                // Limpiar los inputs del formulario
+                $('#inputNombre').val('');
+                $('#inputDescripcion').val('');
+                $('#inputFechaCreacion').val('');
+                $('#inputUsuarioId').val('');
+                $('#inputId').val('');
+            });
+        });
+    </script>
+}
+
 <div class="row flex-nowrap">
     <!-- Sidebar -->
     <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
@@ -36,5 +86,77 @@
     <!-- Contenido principal -->
     <div class="col py-3">
         <h2 class="mt-2">Negocios</h2>
+        <!-- Formulario para agregar un nuevo negocio -->
+        <form asp-action="AgregarOActualizarNegocio" asp-controller="Administrador" method="post">
+            <div class="form-group">
+                <label for="inputId">Id</label>
+                <input type="number" class="form-control" id="inputId" name="Id" readonly>
+            </div>
+            <div class="form-group">
+                <label for="inputNombre">Nombre</label>
+                <input type="text" class="form-control" id="inputNombre" name="Nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="inputDescripcion">Descripción</label>
+                <textarea class="form-control" id="inputDescripcion" name="Descripcion"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="inputFechaCreacion">Fecha de Creación</label>
+                <input type="date" class="form-control" id="inputFechaCreacion" name="FechaCreacion">
+            </div>
+            <div class="form-group">
+                <label for="inputUsuarioId">Dueño (Id del Usuario)</label>
+                <input type="number" class="form-control" id="inputUsuarioId" name="UsuarioId" required>
+            </div>
+            <br>
+            <button id="btnSubmit" type="submit" class="btn btn-primary">Agregar Negocio</button>
+            <button id="btnCancelar" type="button" class="btn btn-danger" style="display: none;">Cancelar</button>
+        </form>
+        <!-- Mostrar errores del ModelState -->
+        @if (ViewData.ModelState.ContainsKey(string.Empty))
+        {
+            <div class="alert alert-danger" role="alert">
+                @Html.ValidationSummary(true)
+            </div>
+        }
+
+        <br>
+        <hr>
+        <br>
+
+        <!-- Tabla para mostrar todos los negocios -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Dueño (Usuario)</th>
+                    <th>Descripción</th>
+                    <th>Fecha de Creación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var negocio in Model)
+                {
+                    <tr>
+                        <td>@negocio.Id</td>
+                        <td>@negocio.Nombre</td>
+                        <td>Id: @negocio.Usuario.Id <br> Nombre: @negocio.Usuario.Nombres @negocio.Usuario.Apellidos <br> Correo: @negocio.Usuario.Correo</td>
+                        <td>@negocio.Descripcion</td>
+                        <td>@negocio.FechaCreacion.ToShortDateString()</td>
+                        <td>
+                            <!-- Botones para modificar y eliminar el negocio -->
+                            <a class="btn btn-info btn-editar" data-id="@negocio.Id">Editar</a>
+                            <form asp-action="EliminarNegocio" asp-controller="Administrador" method="post">
+                                <input type="hidden" name="id" value="@negocio.Id" />
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
+</div>
 </div>

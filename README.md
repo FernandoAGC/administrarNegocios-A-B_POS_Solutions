@@ -24,9 +24,26 @@ dotnet tool install -g dotnet-aspnet-codegenerator
 En el archivo "appsettings.json" remplazar el valor de la clave "DefaultConnection" por su propia cadeneda de conexión a su BD.
 **("ConnectionStrings": {"DefaultConnection": "cadena de conexión"}) 
 
-# Realizar Migraciones
+# Realizar Migraciones (Code First)
 dotnet ef migrations add NombredelaMigracion
 dotnet ef database update
+
+# Ejecutar
+dotnet run
+
+# Ingresar | Login
+Las migraciones incluyen registros de datos inciciales, algunas credenciales de usuarios para poder iniciar sesión son:
+Administradores:
+Correo = "lg@gmail.com", Contraseña = "lg123" | Correo = "jp@gmail.com", Contraseña = "jp123"
+
+<br>
+
+Clientes:
+Correo = "pg@gmail.com", Contraseña = "pg123"
+
+<br>
+
+**Los demas registros se pueden ver definidos en el archivo AppDbContext.cs o consultando la base de datos despues de hacer las migraciones 
 
 <br>
 <br>
@@ -57,6 +74,6 @@ dotnet tool install -g dotnet-aspnet-codegenerator
 In the "appsettings.json" file, replace the value of the "DefaultConnection" key with your own connection string to your database.
 **("ConnectionStrings": {"DefaultConnection": "connection string"})
 
-# Make Migrations
+# Make Migrations (Code First)
 dotnet ef migrations add MigrationName
 dotnet ef database update

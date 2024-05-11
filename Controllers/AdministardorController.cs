@@ -124,10 +124,10 @@ public class AdministradorController : Controller
     public async Task<IActionResult> EliminarNegocio(int id)
     {
         var negocio = await _context.Negocios.FindAsync(id);
-        // Buscar el usuario a eliminar en la base de datos
+        // Buscar el negocio a eliminar en la base de datos
         if (negocio != null)
         {
-            // Eliminar el usuario de la base de datos
+            // Eliminar el negocio de la base de datos
             _context.Negocios.Remove(negocio);
             await _context.SaveChangesAsync();
         }

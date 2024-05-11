@@ -1,3 +1,159 @@
 @{
-    ViewData["Title"] = "Items - Clientes";
+    ViewData["Title"] = "Items - Cliente";
 }
+
+@model IEnumerable<Item>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Manejar el clic en el botón "Editar" de cada cada item
+            $('.btn-editar').click(function () {
+                var id = $(this).data('id');
+                $.ajax({
+                    // obtener valores del item a editar
+                    url: '@Url.Action("ObtenerItem", "Cliente")',
+                    type: 'GET',
+                    data: { id: id },
+                    success: function (item) {
+                        // asignar valores del item a editar
+                        $('#inputNombre').val(item.nombre);
+                        $('#inputDescripcion').val(item.descripcion);
+                        $('#inputCategoriaItemId').val(item.categoriaItemId);
+                        $('#inputPrecio').val(item.precio);
+                        $('#inputNegocioId').val(item.negocioId);
+                        $('#inputId').val(item.id);
+
+                        // cambiar a modo actualizar item
+                        $('#btnSubmit').text('Actualizar Item');
+                        $('#btnCancelar').show();
+                    },
+                    error: function () {
+                        alert('Error al obtener los datos del item.');
+                    }
+                });
+            });
+
+            // Manejar el clic en el botón "Cancelar"
+            $('#btnCancelar').click(function () {
+                // cambiar a modo agregar item
+                $('#btnSubmit').text('Agregar Item');
+                $('#btnCancelar').hide();
+                // Limpiar los inputs del formulario
+                $('#inputNombre').val('');
+                $('#inputDescripcion').val('');
+                $('#inputCategoriaItemId').val('');
+                $('#inputPrecio').val('');
+                $('#inputNegocioId').val('');
+                $('#inputId').val('');
+            });
+        });
+    </script>
+}
+
+<div class="row flex-nowrap">
+    <!-- Sidebar -->
+    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
+        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+            <div class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                <span class="fs-5 d-sm-inline">Cliente</span>
+            </div>
+            <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+                <li>
+                    <a href="@Url.Action("Inicio", "Cliente", new { usuarioId = @Model.First().Negocio.UsuarioId })" class="nav-link px-0 align-middle">
+                        <span class="ms-1 d-sm-inline">Inicio</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Items", "Cliente", new { negocioId = @Model.First().NegocioId })" class="nav-link px-0 align-middle">
+                        <span class="ms-1 d-sm-inline">Administrar Items</span>
+                    </a>
+                </li>
+                <li>
+                    <form class="my-3" asp-action="Logout" asp-controller="Cliente" method="get">
+                        <button type="submit" class="btn btn-danger btn-block">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- Contenido principal -->
+    <div class="col py-3">
+        <h2 class="mt-2">Items</h2>
+        <!-- Formulario para agregar un nuevo item -->
+        <form asp-action="AgregarOActualizarItem" asp-controller="Cliente" method="post">
+            <div class="form-group">
+                <label for="inputId">Id</label>
+                <input type="number" class="form-control" id="inputId" name="Id" readonly>
+            </div>
+            <div class="form-group">
+                <label for="inputNombre">Nombre</label>
+                <input type="text" class="form-control" id="inputNombre" name="Nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="inputDescripcion">Descripción</label>
+                <textarea class="form-control" id="inputDescripcion" name="Descripcion"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="inputCategoriaItemId">Id de la Categoría</label>
+                <input type="number" class="form-control" id="inputCategoriaItemId" name="CategoriaItemId" required>
+            </div>
+            <div class="form-group">
+                <label for="inputPrecio">Precio</label>
+                <input type="text" class="form-control" id="inputPrecio" name="Precio" required>
+            </div>
+            <div class="form-group">
+                <label for="inputNegocioId">Id del Negocio</label>
+                <input type="number" class="form-control" id="inputNegocioId" name="NegocioId" value="@Model.First().NegocioId" readonly>
+            </div>
+            <br>
+            <button id="btnSubmit" type="submit" class="btn btn-primary">Agregar Item</button>
+            <button id="btnCancelar" type="button" class="btn btn-danger" style="display: none;">Cancelar</button>
+        </form>
+        <!-- Mostrar errores del ModelState -->
+        @if (ViewData.ModelState.ContainsKey(string.Empty))
+        {
+            <div class="alert alert-danger" role="alert">
+                @Html.ValidationSummary(true)
+            </div>
+        }
+
+        <br>
+        <hr>
+        <br>
+
+        <!-- Tabla para mostrar todos los negocios -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Nombre</td>
+                        <td>Id: @item.CategoriaItem.Id <br> Nombre: @item.CategoriaItem.Nombre</td>
+                        <td>@item.Descripcion</td>
+                        <td>@item.Precio</td>
+                        <td>
+                            <!-- Botones para modificar y eliminar el negocio -->
+                            <a class="btn btn-info btn-editar" data-id="@item.Id">Editar</a>
+                            <form asp-action="EliminarItem" asp-controller="Cliente" method="post">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

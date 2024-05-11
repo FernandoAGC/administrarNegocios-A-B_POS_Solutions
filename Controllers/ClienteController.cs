@@ -44,12 +44,59 @@ public class ClienteController : Controller
         return RedirectToAction("Login", "Login");
     }
 
-    // Funcionalidad para administrar Usuarios
-
-    // Regresa la vista con la lista de todos los usuarios
+    // Funcionalidad para administrar Items
     [HttpGet]
-    public async Task<IActionResult> Items()
+    public async Task<IActionResult> Items(int negocioId)
     {
-        return View();
+        // Obtener los ítems relacionados con el negocioId encontrado
+        return View(await _context.Items.Include(i => i.CategoriaItem).Include(i => i.Negocio).Where(i => i.NegocioId == negocioId).ToListAsync());
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AgregarOActualizarItem(Item item)
+    {
+        if (item.Id.ToString() == null || item.Id.ToString() == "" || item.Id.Equals(null))
+        {
+            await _context.Items.AddAsync(item);
+            
+        } else {
+            _context.Items.Update(item);
+        }
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Items", "Cliente", new { negocioId = item?.NegocioId });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EliminarItem(int id)
+    {
+        var item = await _context.Items.FindAsync(id);
+        // Buscar el item a eliminar en la base de datos
+        if (item != null)
+        {
+            // Eliminar el item de la base de datos
+            _context.Items.Remove(item);
+            await _context.SaveChangesAsync();
+        }
+        return RedirectToAction("Items", "Cliente", new { negocioId = item?.NegocioId });
+    }
+
+    // obtiene los datos del item a editar
+    [HttpGet]
+    public async Task<IActionResult> ObtenerItem(int id)
+    {
+        var item = await _context.Items.FindAsync(id);
+        if (item != null)
+        {
+            return Json(new
+            {
+                id = item.Id,
+                nombre = item.Nombre,
+                descripcion = item.Descripcion,
+                categoriaItemId = item.CategoriaItemId,
+                precio = item.Precio,
+                negocioId = item.NegocioId
+            });
+        }
+        return NotFound();
     }
 }

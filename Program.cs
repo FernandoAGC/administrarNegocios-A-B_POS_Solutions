@@ -48,5 +48,9 @@ app.MapControllerRoute(
     name: "Cliente",
     pattern: "{controller=Cliente}/{action=Inicio}"
 );
+app.MapControllerRoute(
+    name: "Cliente",
+    pattern: "{controller=Cliente}/{action=Items}"
+);
 
 app.Run();

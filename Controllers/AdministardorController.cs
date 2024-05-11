@@ -32,6 +32,11 @@ public class AdministradorController : Controller
         return View(await negocios.ToListAsync());
     }
 
+    public IActionResult Logout()
+    {
+        return RedirectToAction("Login", "Login");
+    }
+
     // Funcionalidad para administrar Usuarios
 
     // Regresa la vista con la lista de todos los usuarios

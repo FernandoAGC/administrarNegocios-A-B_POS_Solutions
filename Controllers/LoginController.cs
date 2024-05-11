@@ -40,7 +40,7 @@ public class LoginController : Controller
             }
             // si es cliente y se loguea como cliente, se redirige a su respectiva vista
             // si es administrador se puede loguear como cliente o como administrador, se redirige a la vista segun el tipo de login
-            return RedirectToAction("Inicio", tipoUsuario);
+            return RedirectToAction("Inicio", tipoUsuario, new { usuarioId = usuario.Id });
         }
         // El usuario no fue encontrado y muetra mensaje de error
         ModelState.AddModelError(string.Empty, "Correo o contraseña incorrectos.");

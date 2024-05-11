@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using administrarNegocios_A_B_POS_Solutions.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ public class AdministradorController : Controller
         _context = context;
     }
 
+    // Regresa la vista con la lista de los ultimos 20 negocios
     [HttpGet]
     public async Task<IActionResult> Inicio(string filtro)
     {
@@ -30,18 +32,63 @@ public class AdministradorController : Controller
         return View(await negocios.ToListAsync());
     }
 
-    public IActionResult Usuarios()
+    // Regresa la vista con la lista de todos los usuarios
+    [HttpGet]
+    public async Task<IActionResult> Usuarios()
     {
-        return View();
+        // Obtener todos los usuarios y tipos de usuario de la base de datos para construir un modelo para la vista
+        var viewModel = new UsuariosTiposViewModel
+        {
+            Usuarios = await _context.Usuarios.Include(u => u.TipoUsuario).ToListAsync(),
+            TiposUsuario = await _context.TiposUsuario.ToListAsync()
+        };
+        return View(viewModel);
     }
 
-    public IActionResult Negocios()
+    [HttpPost]
+    public async Task<IActionResult> AgregarOActualizarUsuario(Usuario usuario)
     {
-        return View();
+        if (usuario.Id.ToString() == null || usuario.Id.ToString() == "" || usuario.Id.Equals(null))
+        {
+            await _context.Usuarios.AddAsync(usuario);
+            
+        } else {
+            _context.Usuarios.Update(usuario);
+        }
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Usuarios", "Administrador");
     }
 
-    public IActionResult Logout()
+    [HttpPost]
+    public async Task<IActionResult> EliminarUsuario(int id)
     {
-        return RedirectToAction("Login", "Login");
+        var usuario = await _context.Usuarios.FindAsync(id);
+        // Buscar el usuario a eliminar en la base de datos
+        if (usuario != null)
+        {
+            // Eliminar el usuario de la base de datos
+            _context.Usuarios.Remove(usuario);
+            await _context.SaveChangesAsync();
+        }
+        return RedirectToAction("Usuarios", "Administrador");
+    }
+
+    // obtiene los datos del usuario a editar
+    [HttpGet]
+    public async Task<IActionResult> ObtenerUsuario(int id)
+    {
+        var usuario = await _context.Usuarios.FindAsync(id);
+        if (usuario != null)
+        {
+            return Json(new
+            {
+                id = usuario.Id,
+                nombres = usuario.Nombres,
+                apellidos = usuario.Apellidos,
+                correo = usuario.Correo,
+                tipoUsuarioId = usuario.TipoUsuarioId
+            });
+        }
+        return NotFound();
     }
 }

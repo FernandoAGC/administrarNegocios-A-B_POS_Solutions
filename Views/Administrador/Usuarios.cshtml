@@ -2,6 +2,53 @@
     ViewData["Title"] = "Usuarios - Administrador";
 }
 
+@model UsuariosTiposViewModel
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Manejar el clic en el botón "Editar" de cada usuario
+            $('.btn-editar').click(function () {
+                var id = $(this).data('id');
+                $.ajax({
+                    // obtener valores del usuario a editar
+                    url: '@Url.Action("ObtenerUsuario", "Administrador")',
+                    type: 'GET',
+                    data: { id: id },
+                    success: function (usuario) {
+                        // asignar valores del usuario a editar
+                        $('#inputNombres').val(usuario.nombres);
+                        $('#inputApellidos').val(usuario.apellidos);
+                        $('#inputCorreo').val(usuario.correo);
+                        $('#inputTipoUsuarioId').val(usuario.tipoUsuarioId).change();
+                        $('#inputId').val(usuario.id);
+
+                        // cambiar a modo actualizar usuario
+                        $('#btnSubmit').text('Actualizar Usuario');
+                        $('#btnCancelar').show();
+                    },
+                    error: function () {
+                        alert('Error al obtener los datos del usuario.');
+                    }
+                });
+            });
+
+            // Manejar el clic en el botón "Cancelar"
+            $('#btnCancelar').click(function () {
+                // cambiar a modo agregar usuario
+                $('#btnSubmit').text('Agregar Usuario');
+                $('#btnCancelar').hide();
+                // Limpiar los inputs del formulario
+                $('#inputNombres').val('');
+                $('#inputApellidos').val('');
+                $('#inputCorreo').val('');
+                $('#inputTipoUsuarioId').val('');
+                $('#inputId').val('');
+            });
+        });
+    </script>
+}
+
 <div class="row flex-nowrap">
     <!-- Sidebar -->
     <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
@@ -36,5 +83,86 @@
     <!-- Contenido principal -->
     <div class="col py-3">
         <h2 class="mt-2">Usuarios</h2>
+        <!-- Formulario para agregar un nuevo usuario -->
+        <form asp-action="AgregarOActualizarUsuario" asp-controller="Administrador" method="post">
+            <div class="form-group">
+                <label for="inputId">Id</label>
+                <input type="number" class="form-control" id="inputId" name="Id" readonly>
+            </div>
+            <div class="form-group">
+                <label for="inputNombres">Nombres</label>
+                <input type="text" class="form-control" id="inputNombres" name="Nombres" required>
+            </div>
+            <div class="form-group">
+                <label for="inputApellidos">Apellidos</label>
+                <input type="text" class="form-control" id="inputApellidos" name="Apellidos" required>
+            </div>
+            <div class="form-group">
+                <label for="inputCorreo">Correo</label>
+                <input type="email" class="form-control" id="inputCorreo" name="Correo" required>
+            </div>
+            <div class="form-group">
+                <label for="inputContraseña">Contraseña</label>
+                <input type="password" class="form-control" id="inputContraseña" name="Contraseña" required>
+            </div>
+            <div class="form-group">
+                <label id="inputTipoUsuarioId">Tipo de Usuario</label>
+                <select class="form-control" id="inputTipoUsuarioId" name="TipoUsuarioId" required>
+                    <!-- Opciones para el tipo de usuario -->
+                    @foreach (var tipoUsuario in Model.TiposUsuario)
+                    {
+                        <option value="@tipoUsuario.Id">@tipoUsuario.Nombre</option>
+                    }
+                </select>
+            </div>
+            <br>
+            <button id="btnSubmit" type="submit" class="btn btn-primary">Agregar Usuario</button>
+            <button id="btnCancelar" type="button" class="btn btn-danger" style="display: none;">Cancelar</button>
+        </form>
+        <!-- Mostrar errores del ModelState -->
+        @if (ViewData.ModelState.ContainsKey(string.Empty))
+        {
+            <div class="alert alert-danger" role="alert">
+                @Html.ValidationSummary(true)
+            </div>
+        }
+
+        <br>
+        <hr>
+        <br>
+
+        <!-- Tabla para mostrar todos los usuarios -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Tipo de Usuario</th>
+                    <th>Correo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var usuario in Model.Usuarios)
+                {
+                    <tr>
+                        <td>@usuario.Id</td>
+                        <td>@usuario.Nombres</td>
+                        <td>@usuario.Apellidos</td>
+                        <td>@usuario.TipoUsuario.Nombre</td>
+                        <td>@usuario.Correo</td>
+                        <td>
+                            <!-- Botones para modificar y eliminar el usuario -->
+                            <a class="btn btn-info btn-editar" data-id="@usuario.Id">Editar</a>
+                            <form asp-action="EliminarUsuario" asp-controller="Administrador" method="post">
+                                <input type="hidden" name="id" value="@usuario.Id" />
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
